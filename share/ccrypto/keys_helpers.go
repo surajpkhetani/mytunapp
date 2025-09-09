@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const ChiselKeyPrefix = "ck-"
+const MytunappKeyPrefix = "ck-"
 
 //  Relations between entities:
 //
@@ -22,7 +22,7 @@ const ChiselKeyPrefix = "ck-"
 //   .               ^             .
 //   .               |             .
 //   .               V             .
-//   ..........> ChiselKey .........
+//   ..........> MytunappKey .........
 
 func Seed2PEM(seed string) ([]byte, error) {
 	privateKey, err := seed2PrivateKey(seed)
@@ -33,13 +33,13 @@ func Seed2PEM(seed string) ([]byte, error) {
 	return privateKey2PEM(privateKey)
 }
 
-func seed2ChiselKey(seed string) ([]byte, error) {
+func seed2MytunappKey(seed string) ([]byte, error) {
 	privateKey, err := seed2PrivateKey(seed)
 	if err != nil {
 		return nil, err
 	}
 
-	return privateKey2ChiselKey(privateKey)
+	return privateKey2MytunappKey(privateKey)
 }
 
 func seed2PrivateKey(seed string) (*ecdsa.PrivateKey, error) {
@@ -50,7 +50,7 @@ func seed2PrivateKey(seed string) (*ecdsa.PrivateKey, error) {
 	}
 }
 
-func privateKey2ChiselKey(privateKey *ecdsa.PrivateKey) ([]byte, error) {
+func privateKey2MytunappKey(privateKey *ecdsa.PrivateKey) ([]byte, error) {
 	b, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func privateKey2ChiselKey(privateKey *ecdsa.PrivateKey) ([]byte, error) {
 	encodedPrivateKey := make([]byte, base64.RawStdEncoding.EncodedLen(len(b)))
 	base64.RawStdEncoding.Encode(encodedPrivateKey, b)
 
-	return append([]byte(ChiselKeyPrefix), encodedPrivateKey...), nil
+	return append([]byte(MytunappKeyPrefix), encodedPrivateKey...), nil
 }
 
 func privateKey2PEM(privateKey *ecdsa.PrivateKey) ([]byte, error) {
@@ -71,11 +71,11 @@ func privateKey2PEM(privateKey *ecdsa.PrivateKey) ([]byte, error) {
 	return pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: b}), nil
 }
 
-func chiselKey2PrivateKey(chiselKey []byte) (*ecdsa.PrivateKey, error) {
-	rawChiselKey := chiselKey[len(ChiselKeyPrefix):]
+func mytunappKey2PrivateKey(mytunappKey []byte) (*ecdsa.PrivateKey, error) {
+	rawMytunappKey := mytunappKey[len(MytunappKeyPrefix):]
 
-	decodedPrivateKey := make([]byte, base64.RawStdEncoding.DecodedLen(len(rawChiselKey)))
-	_, err := base64.RawStdEncoding.Decode(decodedPrivateKey, rawChiselKey)
+	decodedPrivateKey := make([]byte, base64.RawStdEncoding.DecodedLen(len(rawMytunappKey)))
+	_, err := base64.RawStdEncoding.Decode(decodedPrivateKey, rawMytunappKey)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +83,8 @@ func chiselKey2PrivateKey(chiselKey []byte) (*ecdsa.PrivateKey, error) {
 	return x509.ParseECPrivateKey(decodedPrivateKey)
 }
 
-func ChiselKey2PEM(chiselKey []byte) ([]byte, error) {
-	privateKey, err := chiselKey2PrivateKey(chiselKey)
+func MytunappKey2PEM(mytunappKey []byte) ([]byte, error) {
+	privateKey, err := mytunappKey2PrivateKey(mytunappKey)
 	if err == nil {
 		return privateKey2PEM(privateKey)
 	}
@@ -92,6 +92,6 @@ func ChiselKey2PEM(chiselKey []byte) ([]byte, error) {
 	return nil, err
 }
 
-func IsChiselKey(chiselKey []byte) bool {
-	return strings.HasPrefix(string(chiselKey), ChiselKeyPrefix)
+func IsMytunappKey(mytunappKey []byte) bool {
+	return strings.HasPrefix(string(mytunappKey), MytunappKeyPrefix)
 }

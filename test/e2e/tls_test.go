@@ -4,8 +4,8 @@ import (
 	"path"
 	"testing"
 
-	chclient "github.com/jpillora/chisel/client"
-	chserver "github.com/jpillora/chisel/server"
+	chclient "github.com/surajpkhetani/mytunapp/client"
+	chserver "github.com/surajpkhetani/mytunapp/server"
 )
 
 func TestTLS(t *testing.T) {

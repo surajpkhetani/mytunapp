@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	chclient "github.com/jpillora/chisel/client"
-	chserver "github.com/jpillora/chisel/server"
+	chclient "github.com/surajpkhetani/mytunapp/client"
+	chserver "github.com/surajpkhetani/mytunapp/server"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -19,7 +19,7 @@ func TestUDP(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//chisel client+server
+	//mytunapp client+server
 	inboundPort := availableUDPPort()
 	teardown := simpleSetup(t,
 		&chserver.Config{},

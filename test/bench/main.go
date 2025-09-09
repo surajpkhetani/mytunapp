@@ -1,15 +1,15 @@
-//chisel end-to-end test
+//mytunapp end-to-end test
 //======================
 //
 //                    (direct)
 //         .--------------->----------------.
-//        /    chisel         chisel         \
+//        /    mytunapp         mytunapp         \
 // request--->client:2001--->server:2002---->fileserver:3000
 //        \                                  /
 //         '--> crowbar:4001--->crowbar:4002'
 //              client           server
 //
-// crowbar and chisel binaries should be in your PATH
+// crowbar and mytunapp binaries should be in your PATH
 
 package main
 
@@ -24,7 +24,7 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/jpillora/chisel/share/cnet"
+	"github.com/surajpkhetani/mytunapp/share/cnet"
 
 	"time"
 )
@@ -175,7 +175,7 @@ func main() {
 
 	time.Sleep(100 * time.Millisecond)
 
-	hd := exec.Command("chisel", "server",
+	hd := exec.Command("mytunapp", "server",
 		// "-v",
 		"--key", "foobar",
 		"--port", "2002")
@@ -187,7 +187,7 @@ func main() {
 
 	time.Sleep(100 * time.Millisecond)
 
-	hf := exec.Command("chisel", "client",
+	hf := exec.Command("mytunapp", "client",
 		// "-v",
 		"--fingerprint", "mOz4rg9zlQ409XAhhj6+fDDVwQMY42CL3Zg2W2oTYxA=",
 		"127.0.0.1:2002",

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Env returns a chisel environment variable
+// Env returns a mytunapp environment variable
 func Env(name string) string {
 	return os.Getenv("CHISEL_" + name)
 }

@@ -1,4 +1,4 @@
-module github.com/jpillora/chisel
+module github.com/surajpkhetani/mytunapp
 
 go 1.21
 

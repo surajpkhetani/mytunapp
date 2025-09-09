@@ -11,25 +11,25 @@ import (
 	"strings"
 	"time"
 
-	chclient "github.com/jpillora/chisel/client"
-	chserver "github.com/jpillora/chisel/server"
-	chshare "github.com/jpillora/chisel/share"
-	"github.com/jpillora/chisel/share/ccrypto"
-	"github.com/jpillora/chisel/share/cos"
-	"github.com/jpillora/chisel/share/settings"
+	chclient "github.com/surajpkhetani/mytunapp/client"
+	chserver "github.com/surajpkhetani/mytunapp/server"
+	chshare "github.com/surajpkhetani/mytunapp/share"
+	"github.com/surajpkhetani/mytunapp/share/ccrypto"
+	"github.com/surajpkhetani/mytunapp/share/cos"
+	"github.com/surajpkhetani/mytunapp/share/settings"
 )
 
 var help = `
-  Usage: chisel [command] [--help]
+  Usage: mytunapp [command] [--help]
 
   Version: ` + chshare.BuildVersion + ` (` + runtime.Version() + `)
 
   Commands:
-    server - runs chisel in server mode
-    client - runs chisel in client mode
+    server - runs mytunapp in server mode
+    client - runs mytunapp in client mode
 
   Read more:
-    https://github.com/jpillora/chisel
+    https://github.com/surajpkhetani/mytunapp
 
 `
 
@@ -74,7 +74,7 @@ var commonHelp = `
     --help, This help text
 
   Signals:
-    The chisel process is listening for:
+    The mytunapp process is listening for:
       a SIGUSR2 to print process stats, and
       a SIGHUP to short-circuit the client reconnect timer
 
@@ -82,19 +82,19 @@ var commonHelp = `
     ` + chshare.BuildVersion + ` (` + runtime.Version() + `)
 
   Read more:
-    https://github.com/jpillora/chisel
+    https://github.com/surajpkhetani/mytunapp
 
 `
 
 func generatePidFile() {
 	pid := []byte(strconv.Itoa(os.Getpid()))
-	if err := os.WriteFile("chisel.pid", pid, 0644); err != nil {
+	if err := os.WriteFile("mytunapp.pid", pid, 0644); err != nil {
 		log.Fatal(err)
 	}
 }
 
 var serverHelp = `
-  Usage: chisel server [options]
+  Usage: mytunapp server [options]
 
   Options:
 
@@ -119,7 +119,7 @@ var serverHelp = `
     this flag is set, the --key option is ignored, and the provided private key
     is used to secure all communications. (defaults to the CHISEL_KEY_FILE
     environment variable). Since ECDSA keys are short, you may also set keyfile
-    to an inline base64 private key (e.g. chisel server --keygen - | base64).
+    to an inline base64 private key (e.g. mytunapp server --keygen - | base64).
 
     --authfile, An optional path to a users.json file. This file should
     be an object with users defined like:
@@ -145,11 +145,11 @@ var serverHelp = `
     to '25s' (set to 0s to disable).
 
     --backend, Specifies another HTTP server to proxy requests to when
-    chisel receives a normal HTTP request. Useful for hiding chisel in
+    mytunapp receives a normal HTTP request. Useful for hiding mytunapp in
     plain sight.
 
     --socks5, Allow clients to access the internal SOCKS5 proxy. See
-    chisel client --help for more information.
+    mytunapp client --help for more information.
 
     --reverse, Allow clients to specify reverse port forwarding remotes
     in addition to normal remotes.
@@ -165,7 +165,7 @@ var serverHelp = `
     --tls-domain, Enables TLS and automatically acquires a TLS key and
     certificate using LetsEncrypt. Setting --tls-domain requires port 443.
     You may specify multiple --tls-domain flags to serve multiple domains.
-    The resulting files are cached in the "$HOME/.cache/chisel" directory.
+    The resulting files are cached in the "$HOME/.cache/mytunapp" directory.
     You can modify this path by setting the CHISEL_LE_CACHE variable,
     or disable caching by setting this variable to "-". You can optionally
     provide a certificate notification email by setting CHISEL_LE_EMAIL.
@@ -216,8 +216,8 @@ func server(args []string) {
 	}
 
 	if config.KeySeed != "" {
-		log.Print("Option `--key` is deprecated and will be removed in a future version of chisel.")
-		log.Print("Please use `chisel server --keygen /file/path`, followed by `chisel server --keyfile /file/path` to specify the SSH private key")
+		log.Print("Option `--key` is deprecated and will be removed in a future version of mytunapp.")
+		log.Print("Please use `mytunapp server --keygen /file/path`, followed by `mytunapp server --keyfile /file/path` to specify the SSH private key")
 	}
 
 	if *host == "" {
@@ -301,9 +301,9 @@ func (flag *headerFlags) Set(arg string) error {
 }
 
 var clientHelp = `
-  Usage: chisel client [options] <server> <remote> [remote] [remote] ...
+  Usage: mytunapp client [options] <server> <remote> [remote] [remote] ...
 
-  <server> is the URL to the chisel server.
+  <server> is the URL to the mytunapp server.
 
   <remote>s are remote connections tunneled through the server, each of
   which come in the form:
@@ -338,13 +338,13 @@ var clientHelp = `
       stdio:example.com:22
       1.1.1.1:53/udp
 
-    When the chisel server has --socks5 enabled, remotes can
+    When the mytunapp server has --socks5 enabled, remotes can
     specify "socks" in place of remote-host and remote-port.
     The default local host and port for a "socks" remote is
     127.0.0.1:1080. Connections to this remote will terminate
     at the server's internal SOCKS5 proxy.
 
-    When the chisel server has --reverse enabled, remotes can
+    When the mytunapp server has --reverse enabled, remotes can
     be prefixed with R to denote that they are reversed. That
     is, the server will listen and accept connections, and they
     will be proxied through the client which specified the remote.
@@ -355,7 +355,7 @@ var clientHelp = `
     When stdio is used as local-host, the tunnel will connect standard
     input/output of this program with the remote. This is useful when 
     combined with ssh ProxyCommand. You can use
-      ssh -o ProxyCommand='chisel client chiselserver stdio:%h:%p' \
+      ssh -o ProxyCommand='mytunapp client mytunappserver stdio:%h:%p' \
           user@example.com
     to connect to an SSH server through the tunnel.
 
@@ -386,7 +386,7 @@ var clientHelp = `
     disconnection. Defaults to 5 minutes.
 
     --proxy, An optional HTTP CONNECT or SOCKS5 proxy which will be
-    used to reach the chisel server. Authentication can be specified
+    used to reach the mytunapp server. Authentication can be specified
     inside the URL.
     For example, http://admin:password@my-server.com:8081
             or: socks://admin:password@my-server.com:1080
@@ -401,14 +401,14 @@ var clientHelp = `
     hostname).
 
     --tls-ca, An optional root certificate bundle used to verify the
-    chisel server. Only valid when connecting to the server with
+    mytunapp server. Only valid when connecting to the server with
     "https" or "wss". By default, the operating system CAs will be used.
 
     --tls-skip-verify, Skip server TLS certificate verification of
     chain and host name (if TLS is used for transport connections to
     server). If set, client accepts any TLS certificate presented by
     the server and any host name in that certificate. This only affects
-    transport https (wss) connection. Chisel server's public key
+    transport https (wss) connection. Mytunapp server's public key
     may be still verified (see --fingerprint) after inner connection
     is established.
 
