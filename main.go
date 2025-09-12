@@ -108,7 +108,7 @@ var serverHelp = `
     An optional string to seed the generation of a ECDSA public
     and private key pair. All communications will be secured using this
     key pair. Share the subsequent fingerprint with clients to enable detection
-    of man-in-the-middle attacks (defaults to the CHISEL_KEY environment
+    of man-in-the-middle attacks (defaults to the mytunapp_KEY environment
     variable, otherwise a new key is generate each run).
 
     --keygen, A path to write a newly generated PEM-encoded SSH private key file.
@@ -117,7 +117,7 @@ var serverHelp = `
 
     --keyfile, An optional path to a PEM-encoded SSH private key. When
     this flag is set, the --key option is ignored, and the provided private key
-    is used to secure all communications. (defaults to the CHISEL_KEY_FILE
+    is used to secure all communications. (defaults to the mytunapp_KEY_FILE
     environment variable). Since ECDSA keys are short, you may also set keyfile
     to an inline base64 private key (e.g. mytunapp server --keygen - | base64).
 
@@ -166,9 +166,9 @@ var serverHelp = `
     certificate using LetsEncrypt. Setting --tls-domain requires port 443.
     You may specify multiple --tls-domain flags to serve multiple domains.
     The resulting files are cached in the "$HOME/.cache/mytunapp" directory.
-    You can modify this path by setting the CHISEL_LE_CACHE variable,
+    You can modify this path by setting the mytunapp_LE_CACHE variable,
     or disable caching by setting this variable to "-". You can optionally
-    provide a certificate notification email by setting CHISEL_LE_EMAIL.
+    provide a certificate notification email by setting mytunapp_LE_EMAIL.
 
     --tls-ca, a path to a PEM encoded CA certificate bundle or a directory
     holding multiple PEM encode CA certificate bundle files, which is used to 
